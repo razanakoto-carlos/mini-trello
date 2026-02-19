@@ -13,4 +13,14 @@ model User {
   name String
   email String @unique
   password String
+
+  board Board[]
+}
+
+model Board {
+  id Int @id @default(autoincrement())
+  title String
+  userId Int
+
+  user User @relation(fields:[userId], references:[id])
 }
