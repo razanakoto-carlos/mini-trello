@@ -5,24 +5,6 @@ interface userParam{
     id:string;
 }
 
-//async function for creating user
-export async function createUser(req:Request,res:Response){
-    try{
-        const {name, email,password } = req.body;
-
-        const user = await prisma.user.create({
-            data:{
-                name,
-                email,
-                password,
-            },
-        });
-        res.status(201).json(user);
-    }catch(error){
-        res.status(500).json({error:"Something went wrong"});
-    }
-}
-
 //async function for all user
 export async function getUsers(req:Request,res:Response){
     try{
