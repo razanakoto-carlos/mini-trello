@@ -7,14 +7,14 @@ generator client {
   provider = "prisma-client"
     output   = "../generated/prisma"
 }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 model User {
   id Int @id @default(autoincrement())
   name String
   email String @unique
   password String
 
-  board Board[]
+  boards Board[]
 }
 
 model Board {
@@ -22,5 +22,23 @@ model Board {
   title String
   userId Int
 
+  lists List[]
   user User @relation(fields:[userId], references:[id])
+}
+
+model List {
+  id Int @id @default(autoincrement())
+  title String 
+  boardId Int
+
+  cards Card[]
+  board Board @relation(fields:[boardId], references:[id])
+}
+
+model Card {
+  id Int @id @default(autoincrement())
+  title String
+  listId Int
+  
+  list List @relation(fields: [listId], references:[id])
 }

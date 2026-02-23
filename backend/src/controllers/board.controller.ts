@@ -18,7 +18,7 @@ export async function createBoard(req: AuthRequest, res: Response) {
     });
     res.status(201).json(board);
   } catch (error) {
-    console.log("Error",error);
+    console.log("Error", error);
     res.status(500).json({ error: "Something went wrong" });
   }
 }
@@ -36,7 +36,10 @@ export async function getBoards(req: AuthRequest, res: Response) {
 }
 
 //async for delete
-export async function deleteBoard(req:AuthRequest & Request<userParam>, res: Response) {
+export async function deleteBoard(
+  req: AuthRequest & Request<userParam>,
+  res: Response,
+) {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });

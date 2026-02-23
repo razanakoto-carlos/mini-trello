@@ -27,3 +27,13 @@ export type User = Prisma.UserModel
  * 
  */
 export type Board = Prisma.BoardModel
+/**
+ * Model List
+ * 
+ */
+export type List = Prisma.ListModel
+/**
+ * Model Card
+ * 
+ */
+export type Card = Prisma.CardModel
