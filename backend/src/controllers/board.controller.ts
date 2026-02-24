@@ -6,6 +6,10 @@ interface userParam {
   id: string;
 }
 
+interface boardParam {
+  id: string;
+}
+
 //async function for creating board
 export async function createBoard(req: AuthRequest, res: Response) {
   try {
@@ -30,6 +34,29 @@ export async function getBoards(req: AuthRequest, res: Response) {
       where: { userId: req.user!.id },
     });
     return res.json(boards);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+export async function updateBoard(
+  req: AuthRequest & Request<boardParam>,
+  res: Response,
+) {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const { title } = req.body;
+    const updated = await prisma.board.updateMany({
+      where: { id, userId: req.user!.id },
+      data: {
+        title,
+      },
+    });
+    return res.status(200).json(updated);
   } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
   }

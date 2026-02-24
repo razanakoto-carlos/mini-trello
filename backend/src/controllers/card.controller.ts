@@ -6,6 +6,10 @@ interface userParam {
   id: string;
 }
 
+interface cardParam {
+  id: string;
+}
+
 // CREATE CARD
 export async function createCard(req: AuthRequest, res: Response) {
   try {
@@ -56,6 +60,36 @@ export async function getCards(req: AuthRequest, res: Response) {
 
     return res.json(cards);
   } catch {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+export async function updateCard(
+  req: AuthRequest & Request<cardParam>,
+  res: Response,
+) {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const { title } = req.body;
+    const updated = await prisma.card.updateMany({
+      where: {
+        id,
+        list: {
+          board: {
+            userId: req.user!.id,
+          },
+        },
+      },
+      data: {
+        title,
+      },
+    });
+    return res.status(200).json(updated);
+  } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
   }
 }

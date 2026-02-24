@@ -6,6 +6,10 @@ interface userParam {
   id: string;
 }
 
+interface listParam {
+  id: string;
+}
+
 //async function for creating list
 export async function createList(req: AuthRequest, res: Response) {
   try {
@@ -29,10 +33,10 @@ export async function createList(req: AuthRequest, res: Response) {
       },
     });
 
-    res.status(201).json(list);
+    return res.status(201).json(list);
   } catch (error) {
     console.log("Error", error);
-    res.status(500).json({ error: "Something went wrong" });
+    return res.status(500).json({ error: "Something went wrong" });
   }
 }
 
@@ -58,6 +62,34 @@ export async function getLists(
     });
 
     return res.json(lists);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+export async function updateList(
+  req: AuthRequest & Request<listParam>,
+  res: Response,
+) {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const { title } = req.body;
+    const updated = await prisma.list.updateMany({
+      where: {
+        id,
+        board: {
+          userId: req.user!.id,
+        },
+      },
+      data: {
+        title,
+      },
+    });
+    return res.status(200).json(updated);
   } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
   }
