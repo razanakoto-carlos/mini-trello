@@ -1,12 +1,26 @@
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Boards from "./pages/Boards";
+import { PrivateRoute } from "./components/PrivateRoute";
 
-function App() {
-
+const App = () => {
   return (
-    <>
-    <h2>Hello from react</h2>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Boards />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;

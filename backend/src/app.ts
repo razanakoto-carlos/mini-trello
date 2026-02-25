@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/",authRoute)
+app.use("/auth",authRoute)
 app.use("/users",userRoute);
 app.use("/boards",boardRoute);
 app.use("/",listRoute);
