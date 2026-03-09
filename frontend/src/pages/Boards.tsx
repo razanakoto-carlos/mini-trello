@@ -1,5 +1,21 @@
+import { useState } from "react";
 import ImgLog from "../assets/logout.svg";
 import { useNavigate } from "react-router-dom";
+
+const initialColumns = {
+  todo: {
+    title: "Todo",
+    cards: ["Setup project", "Create Login Page"],
+  },
+  doing: {
+    title: "Doing",
+    cards: ["Build Board UI"],
+  },
+  done: {
+    title: "Done",
+    cards: ["Register Page"],
+  },
+};
 
 function Boards() {
   const navigate = useNavigate();
@@ -8,6 +24,8 @@ function Boards() {
     localStorage.removeItem("token");
     navigate("/login", { replace: true });
   };
+
+  const [columns, setColumns] = useState(initialColumns);
 
   return (
     <div
@@ -32,33 +50,23 @@ function Boards() {
       {/* Lists Container */}
       <div className="flex gap-6 overflow-x-auto">
         {/* List 1 */}
-        <div className="bg-gray-100 w-72 rounded-lg p-4 shadow-md">
-          <h2 className="font-semibold mb-4">Todo</h2>
+        {Object.entries(columns).map(([colId, column]) => (
+          <div
+            key={colId}
+            className="bg-gray-100 w-72 rounded-lg p-4 shadow-md"
+          >
+            <h2 className="font-semibold mb-4">{column.title}</h2>
 
-          {/* Cards */}
-          <div className="space-y-3">
-            <div className="bg-white p-3 rounded shadow">Setup project</div>
-            <div className="bg-white p-3 rounded shadow">Create login page</div>
+            {/* Cards */}
+            <div className="space-y-3">
+              {column.cards.map((card, index) => (
+                <div key={index} className="bg-white p-3 rounded shadow">
+                  {card}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* List 2 */}
-        <div className="bg-gray-100 w-72 rounded-lg p-4 shadow-md">
-          <h2 className="font-semibold mb-4">Doing</h2>
-
-          <div className="space-y-3">
-            <div className="bg-white p-3 rounded shadow">Build board UI</div>
-          </div>
-        </div>
-
-        {/* List 3 */}
-        <div className="bg-gray-100 w-72 rounded-lg p-4 shadow-md">
-          <h2 className="font-semibold mb-4">Done</h2>
-
-          <div className="space-y-3">
-            <div className="bg-white p-3 rounded shadow">Register page</div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

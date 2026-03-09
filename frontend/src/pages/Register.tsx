@@ -5,7 +5,7 @@ function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleForm = async (e: React.FormEvent) => {
+  const handleForm = async (e: React.SubmitEvent) => {
     e.preventDefault();
     try {
       const data = await apiFetch("/auth/register", {
