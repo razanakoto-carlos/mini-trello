@@ -39,9 +39,10 @@ export async function createCard(req: AuthRequest, res: Response) {
 }
 
 // GET CARDS BY LIST
-export async function getCards(req: AuthRequest, res: Response) {
+export async function getCard(req: AuthRequest, res: Response) {
   try {
-    const listId = Number(req.query.listId);
+    
+    const listId = Number(req.params.listId);
 
     if (isNaN(listId)) {
       return res.status(400).json({ error: "Invalid listId" });
@@ -64,6 +65,7 @@ export async function getCards(req: AuthRequest, res: Response) {
   }
 }
 
+
 export async function updateCard(
   req: AuthRequest & Request<cardParam>,
   res: Response,
@@ -74,7 +76,7 @@ export async function updateCard(
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const { title } = req.body;
+    const { title,listId } = req.body;
     const updated = await prisma.card.updateMany({
       where: {
         id,
@@ -86,6 +88,7 @@ export async function updateCard(
       },
       data: {
         title,
+        listId,
       },
     });
     return res.status(200).json(updated);
