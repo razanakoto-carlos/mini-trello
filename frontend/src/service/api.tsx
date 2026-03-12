@@ -12,7 +12,7 @@ export async function fetchLists(boardId: number) {
 
 // ─── CARDS ────────────────────────────────────────────────
 export async function fetchCards(listId: number) {
-  return apiFetch(`/cards?listId=${listId}`);
+  return apiFetch(`/cards/${listId}`);
 }
 
 // ─── DÉPLACER UNE CARTE ───────────────────────────────────

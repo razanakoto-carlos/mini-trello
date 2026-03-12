@@ -27,9 +27,13 @@ function Boards() {
     const listsWithCards: ListWithCards[] = await Promise.all(
       listsData.map(async (list: ListWithCards) => {
         const cards = await fetchCards(list.id);
+        console.log("Fetch list & Card : ",cards);
         return { ...list, cards }; // ← on colle les cartes dans la liste
       })
     );
+
+   
+
 
     setLists(listsWithCards);
   };
@@ -83,41 +87,65 @@ function Boards() {
   };
 
   return (
-    <div
-      className="min-h-screen p-6"
-      style={{ background: "linear-gradient(to right, #68C9A7, #4FC0A4)" }}
-    >
-      <h1 className="flex justify-between text-2xl font-bold text-white mb-6">
-        Mini Trello
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] p-8">
+
+      {/* ── Header ── */}
+      <div className="flex justify-between items-center mb-10">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            Mini Trello
+          </h1>
+        </div>
         <img
           src={ImgLog}
           alt="LogOut"
-          className="w-8 cursor-pointer hover:opacity-60 transition"
+          className="w-8 cursor-pointer opacity-50 hover:opacity-100 transition-opacity duration-200"
           onClick={handleLogOut}
         />
-      </h1>
+      </div>
 
-      <div className="flex gap-6 overflow-x-auto">
+      {/* ── Colonnes ── */}
+      <div className="flex gap-6 overflow-x-auto pb-4">
         {lists.map((list) => (
           <div
             key={list.id}
-            className="bg-gray-100 w-72 rounded-lg p-4 shadow-md min-h-[100px]"
+            className="bg-white/5 border border-white/10 backdrop-blur-md w-72 rounded-2xl p-4 shadow-md min-h-[120px] flex-shrink-0 hover:border-white/20 transition-all duration-200"
             onDragOver={handleDragOver}
             onDrop={() => handleDrop(list.id)}
           >
-            <h2 className="font-semibold mb-4">{list.title}</h2>
+            {/* Titre colonne */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-indigo-400 shadow-sm shadow-indigo-400" />
+                <h2 className="text-white font-semibold text-sm tracking-wide">
+                  {list.title}
+                </h2>
+              </div>
+              <span className="bg-white/10 text-white/40 text-xs font-semibold px-2 py-0.5 rounded-full">
+                {list.cards.length}
+              </span>
+            </div>
 
-            <div className="space-y-3">
+            {/* Cartes */}
+            <div className="space-y-2">
               {list.cards.map((card: Card) => (
                 <div
                   key={card.id}
                   draggable
                   onDragStart={() => handleDragStart(card.id, list.id)}
-                  className="bg-white p-3 rounded shadow cursor-grab active:cursor-grabbing"
+                  className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-3 py-2.5 text-white/80 text-sm cursor-grab active:cursor-grabbing transition-colors duration-150"
                 >
+                  <span className="text-white/20 text-xs">⠿</span>
                   {card.title}
                 </div>
               ))}
+
+              {/* Colonne vide */}
+              {list.cards.length === 0 && (
+                <div className="text-center text-white/20 text-xs border-2 border-dashed border-white/10 rounded-xl py-6">
+                  Dépose une carte ici
+                </div>
+              )}
             </div>
           </div>
         ))}

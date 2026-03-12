@@ -38,54 +38,74 @@ function Login() {
   };
 
   return (
-    <div
-      className="min-h-screen pt-15"
-      style={{
-        background: "linear-gradient(to right, #68C9A7, #4FC0A4)",
-      }}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] flex items-center justify-center p-6">
+
       <form
-        className="max-w-sm mx-auto bg-white py-5 px-10 rounded shadow-md"
+        className="w-full max-w-sm bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl py-10 px-10 shadow-2xl"
         onSubmit={handleForm}
       >
-        <h2 className="text-2xl mb-12 text-center text-[#8BAC96]">Login</h2>
-        {/* {error && <p className="text-red-500">{error}</p>} */}
-        <input
-          type="email"
-          name="email"
-          id="name"
-          placeholder="Email"
-          value={form.email}
-          onChange={handChange}
-          className="border border-gray-400 rounded p-3 w-full mb-4 focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-500"
-          required
-        />
-        <input
-          type={showPassword ? "text" : "password"}
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handChange}
-          className="border border-gray-400 rounded p-3 w-full mb-6 focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-500"
-          required
-        />
-        <div className="flex gap-1">
+        {/* Logo + Titre */}
+        <div className="flex flex-col items-center gap-3 mb-10">
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            Connexion
+          </h2>
+          <p className="text-white/30 text-sm">Bienvenue sur Mini Trello</p>
+        </div>
+
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-white/50 text-xs font-semibold mb-1.5 tracking-wide uppercase">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="name"
+            placeholder="ton@email.com"
+            value={form.email}
+            onChange={handChange}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+            required
+          />
+        </div>
+
+        {/* Password */}
+        <div className="mb-5">
+          <label className="block text-white/50 text-xs font-semibold mb-1.5 tracking-wide uppercase">
+            Mot de passe
+          </label>
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="••••••••"
+            value={form.password}
+            onChange={handChange}
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+            required
+          />
+        </div>
+
+        {/* Show password */}
+        <div className="flex items-center gap-2 mb-8">
           <input
             type="checkbox"
             name="show"
             id="show"
             onClick={() => setShowPassword(!showPassword)}
+            className="accent-indigo-500"
           />
-          <label htmlFor="show">Show Password</label>
+          <label htmlFor="show" className="text-white/40 text-sm cursor-pointer">
+            Afficher le mot de passe
+          </label>
         </div>
-        <div className="flex justify-end">
-          <button
-            className="py-2 px-4 rounded text-white bg-[#0B847A]"
-            type="submit"
-          >
-            LOGIN
-          </button>
-        </div>
+
+        {/* Bouton */}
+        <button
+          className="w-full py-3 rounded-xl text-white font-semibold text-sm bg-gradient-to-r from-indigo-500 to-violet-600 hover:opacity-90 active:scale-95 transition-all duration-150 shadow-lg shadow-indigo-500/30"
+          type="submit"
+        >
+          SE CONNECTER
+        </button>
       </form>
     </div>
   );
