@@ -11,6 +11,7 @@ export function authMiddleware(
   next: NextFunction,
 ) {
   const authHeader = req.headers.authorization;
+  
   if (!authHeader) {
     return res.status(401).json({ error: "No token provided" });
   }

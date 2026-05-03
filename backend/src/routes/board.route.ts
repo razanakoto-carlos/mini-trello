@@ -4,9 +4,11 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.post("/",authMiddleware,createBoard);
-router.get("/",authMiddleware,getBoards);
-router.patch("/:id",authMiddleware,updateBoard);
-router.delete("/:id",authMiddleware,deleteBoard);
+router.use(authMiddleware)
+
+router.post("/",createBoard);
+router.get("/",getBoards);
+router.patch("/:id",updateBoard);
+router.delete("/:id",deleteBoard);
 
 export default router;
