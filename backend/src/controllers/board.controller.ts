@@ -10,7 +10,6 @@ interface boardParam {
   id: string;
 }
 
-//async function for creating board
 export async function createBoard(req: AuthRequest, res: Response) {
   try {
     const { title } = req.body;
@@ -18,6 +17,12 @@ export async function createBoard(req: AuthRequest, res: Response) {
       data: {
         title,
         userId: req.user!.id,
+        lists: {
+          create: [{ title: "TODO" }, { title: "DOING" }, { title: "DONE" }],
+        },
+      },
+      include: {
+        lists: true,
       },
     });
     res.status(201).json(board);
@@ -27,7 +32,6 @@ export async function createBoard(req: AuthRequest, res: Response) {
   }
 }
 
-//async function for all board
 export async function getBoards(req: AuthRequest, res: Response) {
   try {
     const boards = await prisma.board.findMany({
@@ -76,6 +80,32 @@ export async function deleteBoard(
     });
     return res.json(board);
   } catch {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+export async function getBoard(
+  req: AuthRequest & Request<{ boardId: string }>,
+  res: Response,
+) {
+  try {
+    const id = parseInt(req.params.boardId);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
+
+    const board = await prisma.board.findFirst({
+      where: {
+        id,
+        userId: req.user!.id,
+      },
+      include: {
+        lists: true,
+      },
+    });
+
+    if (!board) return res.status(404).json({ error: "Board not found" });
+
+    return res.json(board);
+  } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
   }
 }

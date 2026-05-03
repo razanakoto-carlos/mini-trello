@@ -10,7 +10,6 @@ interface cardParam {
   id: string;
 }
 
-// CREATE CARD
 export async function createCard(req: AuthRequest, res: Response) {
   try {
     const { title, listId } = req.body;
@@ -38,10 +37,8 @@ export async function createCard(req: AuthRequest, res: Response) {
   }
 }
 
-// GET CARDS BY LIST
-export async function getCard(req: AuthRequest, res: Response) {
+export async function getCards(req: AuthRequest, res: Response) {
   try {
-    
     const listId = Number(req.params.listId);
 
     if (isNaN(listId)) {
@@ -65,7 +62,6 @@ export async function getCard(req: AuthRequest, res: Response) {
   }
 }
 
-
 export async function updateCard(
   req: AuthRequest & Request<cardParam>,
   res: Response,
@@ -76,7 +72,7 @@ export async function updateCard(
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const { title,listId } = req.body;
+    const { title, listId } = req.body;
     const updated = await prisma.card.updateMany({
       where: {
         id,
@@ -97,14 +93,13 @@ export async function updateCard(
   }
 }
 
-// DELETE CARD
 export async function deleteCard(
   req: AuthRequest & Request<userParam>,
   res: Response,
 ) {
   try {
     const id = parseInt(req.params.id);
-
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid ID" });
     const card = await prisma.card.findFirst({
       where: {
         id,
