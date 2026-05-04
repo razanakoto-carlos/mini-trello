@@ -24,7 +24,8 @@ export const loginSchema = Joi.object({
     "any.required": "L'email est obligatoire",
   }),
 
-  password: Joi.string().required().messages({
+  password: Joi.string().min(6).required().messages({
+    "string.min": "Le mot de passe doit avoir au moins 6 caractères",
     "any.required": "Le mot de passe est obligatoire",
   }),
 });

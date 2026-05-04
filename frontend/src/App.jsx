@@ -1,41 +1,25 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { GuestRoute } from "./components/GuestRoute";
+import { AuthLoader } from "./components/AuthLoader";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Boards from "./pages/Boards";
-import { PrivateRoute } from "./components/PrivateRoute";
-import { PublicRoute } from "./components/PublicRoute";
 
-const App = () => {
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Boards />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route element={<AuthLoader />}>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Boards />} />
+        </Route>
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+      </Route>
+    </Routes>
   );
-};
+}
 
 export default App;

@@ -20,3 +20,16 @@ export type Card = {
 export type ListWithCards = List & {
   cards: Card[];
 };
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export interface authStore {
+  user: User | null;
+  isAuthenticated:boolean
+  setAuth: (user:User) => void
+  clearAuth: ()=> void
+}

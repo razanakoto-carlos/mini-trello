@@ -2,9 +2,10 @@ import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { AuthRequest } from "../middleware/auth.middleware.js";
 
-function generateToken(data: number) {
-  return jwt.sign({ data }, process.env.JWT_SECRET as string, {
+function generateToken(id: number) {
+  return jwt.sign({ id }, process.env.JWT_SECRET as string, {
     expiresIn: "7d",
   });
 }
@@ -16,7 +17,7 @@ export async function register(req: Request, res: Response) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
-      return res.status(400).json({ message: "User already exist" });
+      return res.status(400).json({ message: "Cet utilisateur existe déjà" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,19 +52,21 @@ export async function register(req: Request, res: Response) {
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
-    }
+
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalide Credentials" });
+      return res.status(401).json({
+        message: "Email ou mot de passe incorrect",
+      });
     }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid Credentials" });
+      return res.status(401).json({
+        message: "Email ou mot de passe incorrect",
+      });
     }
 
     const token = generateToken(user.id);
@@ -75,13 +78,11 @@ export async function login(req: Request, res: Response) {
       sameSite: "strict",
     });
 
-    return res.status(200).json(
-      res.status(200).json({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      }),
-    );
+    return res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     console.log("Error", error);
     return res.status(500).json({ error: "Something went wrong" });
@@ -96,6 +97,25 @@ export async function logout(req: Request, res: Response) {
       httpOnly: true,
     });
     return res.status(200).json({ message: "Logout successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+export async function authenticate(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user?.id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(400).json({ message: "Cet utilisateur n'existe pas" });
+    }
+    
+    return res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     return res.status(500).json({ error: "Something went wrong" });
   }
