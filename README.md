@@ -12,7 +12,7 @@ Une application Kanban full-stack construite avec React, Node.js et Prisma — i
 | État             | Zustand (auth), TanStack Query (données serveur) |
 | Backend          | Node.js, Express, TypeScript                     |
 | Base de données  | PostgreSQL via Prisma ORM                        |
-| Authentification | JWT                                              |
+| Authentification | JWT + cookies httpOnly                           |
 
 ---
 
@@ -45,29 +45,6 @@ L'application tourne sur `http://localhost:5173` — API sur `http://localhost:3
 
 ---
 
-## Structure du Projet
-
-nexboard/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/     # board, card
-│   │   ├── routes/          # board, card
-│   │   ├── middleware/      # auth (JWT)
-│   │   ├── validations/     # boardSchema, cardSchema (Zod)
-│   │   └── server.ts
-│   └── prisma/
-│       └── schema.prisma
-│
-└── frontend/
-├── src/
-│   ├── components/
-│   ├── pages/           # Login, Register
-│   ├── store/           # authStore (Zustand)
-│   ├── service/         # api
-│   └── main.tsx
-
----
-
 ## Variables d'Environnement
 
 Crée un fichier `.env` dans `/backend` :
@@ -76,6 +53,31 @@ Crée un fichier `.env` dans `/backend` :
 DATABASE_URL="postgresql://user:password@localhost:5432/nexboard"
 JWT_SECRET="ta_clé_secrète"
 PORT=3000
+```
+---
+
+## Structure du Projet
+
+```
+nexboard/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/     # board, card, auth
+│   │   ├── routes/          # board, card, auth
+│   │   ├── middleware/      # auth (JWT + cookie)
+│   │   ├── validations/     # schemas Joi
+│   │   └── server.ts
+│   └── prisma/
+│       └── schema.prisma
+│
+└── frontend/
+    └── src/
+        ├── components/
+        ├── pages/           # Login, Register, Boards
+        ├── routes/          # ProtectedRoute, GuestRoute
+        ├── store/           # authStore (Zustand)
+        ├── service/         # api (Axios)
+        └── main.tsx
 ```
 
 ---
