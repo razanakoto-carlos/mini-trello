@@ -33,11 +33,52 @@ export async function registerUser({
 }
 
 export const getMe = async () => {
-  const response = await api.get("auth/me")
-  return response.data
-}
+  const response = await api.get("auth/me");
+  return response.data;
+};
 
 export const logout = async () => {
-  const response = await api.post("auth/logout")
-  return response.data
-}
+  const response = await api.post("auth/logout");
+  return response.data;
+};
+
+export const createBoard = async (title: string) => {
+  const response = await api.post("boards", { title });
+  return response.data;
+};
+
+export const getBoards = async () => {
+  const response = await api.get("boards");
+  return response.data;
+};
+
+export const getBoard = async (id: number) => {
+  const response = await api.get(`boards/${id}`);
+  return response.data;
+};
+
+export const getCard = async (id: number) => {
+  const response = await api.get(`cards/${id}`);
+  return response.data;
+};
+
+export const deleteBoard = async (id: number) => {
+  const response = await api.delete(`boards/${id}`);
+  return response.data;
+};
+
+export const createCard = async ({
+  title,
+  listId,
+}: {
+  title: string;
+  listId: number;
+}) => {
+  const response = await api.post("cards", { title, listId });
+  return response.data;
+};
+
+export const deleteCard = async (id: number) => {
+  const response = await api.delete(`cards/${id}`);
+  return response.data;
+};

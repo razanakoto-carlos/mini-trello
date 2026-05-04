@@ -1,20 +1,11 @@
-
-export type Board = {
-  id: number;
-  title: string;
-  userId: number;
-};
-
 export type List = {
   id: number;
   title: string;
-  boardId: number;
 };
 
 export type Card = {
   id: number;
   title: string;
-  listId: number;
 };
 
 export type ListWithCards = List & {
@@ -32,4 +23,9 @@ export interface authStore {
   isAuthenticated:boolean
   setAuth: (user:User) => void
   clearAuth: ()=> void
+}
+
+export interface Board {
+  id: number;
+  title: string;
 }

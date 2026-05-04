@@ -1,20 +1,24 @@
 import { useNavigate } from "react-router-dom";
-
-type Board = {
-  id: number;
-  name: string;
-};
+import { Board } from "../types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteBoard } from "../service/api";
 
 type Props = {
   board: Board;
-  onDelete?: (id: number) => void;
 };
 
-export default function BoardCard({ board, onDelete }: Props) {
+export default function BoardCard({ board }: Props) {
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: deleteBoard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getBoards"] });
+    },
+  });
   return (
-    <div className="
+    <div
+      className="
         relative h-24 rounded-md px-3 pt-3 text-left
         bg-white/30 hover:bg-white/40
         transition-all duration-150 active:scale-95
@@ -25,14 +29,14 @@ export default function BoardCard({ board, onDelete }: Props) {
         className="w-full h-full text-left"
       >
         <span className="text-white font-semibold text-sm line-clamp-2 leading-snug">
-          {board.name}
+          {board.title}
         </span>
       </button>
 
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onDelete?.(board.id);
+          mutate(board.id);
         }}
         className="
           absolute top-2 right-2

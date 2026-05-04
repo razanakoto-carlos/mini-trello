@@ -13,7 +13,7 @@ export default function CreateBoardForm({
   onKeyDown,
 }: CreateBoardFormProps) {
   return (
-    <div className="h-24 rounded-md px-3 py-2 flex flex-col gap-2 bg-white/30">
+    <div className="h-10 rounded-md px-3 py-2 flex flex-col gap-2 bg-white/30">
       <input
         autoFocus
         type="text"

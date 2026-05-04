@@ -2,24 +2,33 @@ import { useState } from "react";
 import Header from "../components/Header";
 import BoardCard from "../components/BoardCard";
 import CreateBoardForm from "../components/CreateBoardForm";
-
-interface Board {
-  id: number;
-  name: string;
-}
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createBoard, getBoards } from "../service/api";
+import { Board } from "../types";
 
 function Boards() {
-  const [boards, setBoards] = useState<Board[]>([
-    { id: 1, name: "Mon premier board" },
-    { id: 2, name: "Projet personnel" },
-  ]);
   const [boardTitle, setBoardTitle] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: createBoard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getBoards"] });
+    },
+  });
+
+  const {
+    data: boards,
+    isLoading,
+    error,
+  } = useQuery({
+    queryFn: getBoards,
+    queryKey: ["getBoards"],
+  });
 
   const handleCreate = () => {
     if (!boardTitle.trim()) return;
-    const newBoard: Board = { id: Date.now(), name: boardTitle.trim() };
-    setBoards([...boards, newBoard]);
+    mutate(boardTitle.trim());
     setBoardTitle("");
     setShowInput(false);
   };
@@ -38,11 +47,18 @@ function Boards() {
       <div className="flex items-center gap-2 px-6 py-3 text-white/90 text-sm font-medium">
         Mes boards
       </div>
-      <main className="px-6 py-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 max-w-5xl">
-          {boards.map((board) => (
-            <BoardCard key={board.id} board={board} />
-          ))}
+      {isLoading && (
+        <div className="flex items-center gap-2 px-6 py-3 text-white/90 text-sm font-medium">
+          Chargement....
+        </div>
+      )}
+
+      <main className="px-6 py-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 max-w-5xl">
+          {boards &&
+            boards.map((board: Board) => (
+              <BoardCard key={board.id} board={board} />
+            ))}
 
           {showInput ? (
             <CreateBoardForm
