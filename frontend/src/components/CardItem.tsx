@@ -1,49 +1,39 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "../types";
-import { deleteCard, getCard } from "../service/api";
+import DraggableCard from "./DraggableCard";
+import { getCard } from "../service/api";
 
-export default function CardItem({ listId }: { listId: number }) {
-  const queryClient = useQueryClient();
+export default function CardItem({
+  listId,
+  emptySlot = false,
+}: {
+  listId: number;
+  emptySlot?: boolean;
+}) {
   const { data: cards, isLoading } = useQuery({
     queryFn: () => getCard(listId),
     queryKey: ["getCards", listId],
   });
-  const { mutate } = useMutation({
-    mutationFn: deleteCard,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getCards"] });
-    },
-  });
+  const isEmpty = !isLoading && (!cards || cards.length === 0);
   return (
     <>
-      {isLoading && <p>Chargement...</p>} <p></p>
-      {cards &&
-        cards.map((card: Card) => (
-          <div
-            key={card.id}
-            className="
-        bg-white rounded-sm px-3 py-2 shadow-sm
-        flex items-start justify-between gap-2
-        border border-black/10
-        hover:bg-gray-50 transition cursor-pointer
-        group
-      "
-          >
-            <span className="text-sm text-gray-800 leading-snug">
-              {card.title}
-            </span>
+      {isLoading && <p className="text-xs text-gray-400">Chargement...</p>}
 
-            <button
-              onClick={() => mutate(card.id)}
-              className="
-          text-gray-300 hover:text-red-400 text-xs
-          opacity-0 group-hover:opacity-100 transition
-        "
-            >
-              ✕
-            </button>
-          </div>
-        ))}
+      {cards?.map((card: Card) => (
+        <DraggableCard card={card} key={card.id} />
+      ))}
+
+      {isEmpty && !emptySlot && (
+        <div className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md py-4 text-gray-400 text-xs">
+          ── Aucune carte ──
+        </div>
+      )}
+
+      {emptySlot && (
+        <div className="flex items-center justify-center border-2 border-dashed border-blue-300 bg-blue-50 rounded-md py-6 text-blue-400 text-xs transition-all duration-150">
+          Déposer ici
+        </div>
+      )}
     </>
   );
 }

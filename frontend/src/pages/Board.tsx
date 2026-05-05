@@ -1,10 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
 import arrow from "../assets/arrow.svg";
-import CardItem from "../components/CardItem";
-import AddCard from "../components/AddCard";
-import { useQuery } from "@tanstack/react-query";
-import { getBoard } from "../service/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getBoard, moveCard } from "../service/api";
 import { List } from "../types";
+import { DndContext,DragEndEvent } from "@dnd-kit/core";
+import DroppableList from "../components/DroppableList";
+
 
 function Board() {
   const navigate = useNavigate();
@@ -14,6 +15,25 @@ function Board() {
     queryFn: () => getBoard(boardId!),
     queryKey: ["board", boardId],
   });
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: moveCard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getCards"] });
+    },
+  });
+
+  function handleDragEnd(event:DragEndEvent) {
+    const { active, over } = event;
+    if (!over) return;
+    if (active.id === over.id) return;
+
+    mutate({
+      cardId: active.id as number,
+      listId: over.id as number,
+    });
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-blue-800 via-blue-500 to-blue-300">
       <header className="flex items-center gap-4 px-4 py-2 bg-black/20">
@@ -32,28 +52,14 @@ function Board() {
           {boards?.title ?? "Chargement..."}
         </h1>
       </header>
-      <main className="flex gap-3 px-4 py-4 overflow-x-auto flex-1">
-        {boards &&
-          boards.lists.map((list: List) => (
-            <div
-              className="w-64 min-w-64 bg-gray-100 rounded-md flex flex-col shrink-0 "
-              key={list.id}
-            >
-              <div className="px-3 pt-3 pb-2">
-                <h2 className="text-sm font-semibold text-gray-800">
-                  {list.title}
-                </h2>
-              </div>
-
-              <div className="flex flex-col gap-2 px-2">
-                <CardItem listId={list.id} />
-              </div>
-              <div className="px-2 py-2">
-                <AddCard listId={list.id} />
-              </div>
-            </div>
-          ))}
-      </main>
+      <DndContext onDragEnd={handleDragEnd}>
+        <main className="flex gap-3 px-4 py-4 overflow-x-auto flex-1">
+          {boards &&
+            boards.lists.map((list: List) => (
+              <DroppableList list={list} key={list.id} />
+            ))}
+        </main>
+      </DndContext>
     </div>
   );
 }

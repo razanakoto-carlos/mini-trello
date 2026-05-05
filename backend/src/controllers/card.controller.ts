@@ -72,7 +72,7 @@ export async function updateCard(
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const { title, listId } = req.body;
+    const { listId } = req.body;
     const updated = await prisma.card.updateMany({
       where: {
         id,
@@ -83,7 +83,6 @@ export async function updateCard(
         },
       },
       data: {
-        title,
         listId,
       },
     });

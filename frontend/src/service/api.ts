@@ -79,6 +79,11 @@ export const createCard = async ({
 };
 
 export const deleteCard = async (id: number) => {
-  const response = await api.delete(`cards/${id}`);
+  const response = await api.delete(`/cards/${id}`);
   return response.data;
 };
+
+export async function moveCard({cardId,listId}: {cardId: number;listId: number;}) {
+  const response = await api.patch(`/cards/${cardId}`, { listId });
+  return response.data;
+}

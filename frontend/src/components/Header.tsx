@@ -29,13 +29,23 @@ function Header() {
           Nexboard
         </span>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="text-white/60 text-sm hidden sm:block">
-          {user?.email}
+      <div className="flex items-center gap-3">
+        <span className="text-white/70 text-sm hidden sm:block font-medium tracking-wide">
+          {user?.email
+            ? user.email.charAt(0).toUpperCase() + user.email.slice(1)
+            : ""}
         </span>
+        <div className="w-px h-4 bg-white/20 hidden sm:block" />
         <button
           onClick={handleLogout}
-          className="text-white/80 hover:text-white text-sm hover:bg-white/20 rounded px-3 py-1.5 transition"
+          className="
+      flex items-center gap-1.5
+      text-white/80 hover:text-white text-sm font-medium
+      hover:bg-white/20 backdrop-blur-sm
+      border border-transparent hover:border-white/20
+      rounded-lg px-3 py-1.5
+      transition-all duration-150
+    "
         >
           Se déconnecter
         </button>
